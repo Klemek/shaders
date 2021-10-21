@@ -7,17 +7,9 @@ out vec4 fragColor;
 
 uniform vec2 iResolution;
 uniform float iTime;
-uniform float iTimeDelta;
-uniform int iFrame;
-uniform vec4 iMouse;
-uniform sampler2D iChannel0;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
-uniform vec4 iDate;
-uniform float iSampleRate;
-uniform vec3 spectrum2;
+uniform vec3 spectrum1;
 uniform sampler2D midi1;
+uniform sampler2D texture1;
 
 float midi(float x, float y) {
     return texture(midi1, vec2(x/32., y/32.)).x;
@@ -72,19 +64,25 @@ void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
 ////////////////////////////////////////////////////////////////////////////////
 
 #define PI 3.14159
-#define BPM 240
 #define E .0001
-
-float tbpm(float f) {
-    return iTime * f * BPM / 60;
-}
-
-float sinbpm(float f, float d) {
-    return sin(tbpm(f) * PI + d * PI);
-}
 
 vec2 cmod(vec2 uv, float m) {
     return mod(uv + m * .5, m) - m * .5;
+}
+
+mat2 rot(float angle) {
+    return mat2(
+        cos(angle * 2. * PI), -sin(angle * 2. * PI),
+        sin(angle * 2. * PI), cos(angle * 2. * PI)
+    );
+}
+
+vec2 move(vec2 uv, float speed, float range) {
+    return uv + sin(iTime * speed) * range;
+}
+
+vec2 pan(vec2 uv, float zoom, float m) {
+    return cmod(uv * zoom, m);
 }
 
 float circ(vec2 uv, vec2 c, float size) {
@@ -103,59 +101,37 @@ vec3 col(float x) {
     );
 }
 
-vec3 mask(vec3 c, float m, vec3 c2) {
-    return clamp(c * (1 - m) + m * c2, 0, 1);
-}
-
-mat2 rot(float angle) {
-    return mat2(
-        cos(angle * 2. * PI), -sin(angle * 2. * PI),
-        sin(angle * 2. * PI), cos(angle * 2. * PI)
-    );
-}
-
-vec2 lens(vec2 uv, float limit, float power) {
-    return uv * (F1 - length(uv * P1));
-}
-
-vec2 move(vec2 uv, float speed, float range) {
-    return uv + sin(iTime * speed) * range;
-}
-
-vec2 rotate(vec2 uv, float speed) {
-    return uv * rot(iTime * speed);
-}
-
-vec2 pan(vec2 uv, float zoom, float m) {
-    return cmod(uv * zoom, m);
-}
-
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv1 = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     vec2 uv = uv1;
-     // B11 / F1 + P1 - bend
-    uv = mix(uv, lens(uv, F1, P1), vec2(B11));
-    // B41 / P4 movement speed / F4 movement range
-    uv = mix(uv, move(uv, P4, F4), vec2(B41));
-    // B51 / P5 rotation speed
-    uv = mix(uv, rotate(uv, P5), vec2(B51));
-    // B21 / F2 - zoom / P2 - shape
-    uv = mix(uv, pan(uv, F2 * 10, P2), vec2(B21));
-    // B31 / F3 - wave repeat / P3 - wave speed
-    uv = mix(uv, uv * cos(length(uv * F3 * 200) + iTime * P3 * 10), vec2(B31));
-    // B61 / P6 - color1
-    // B71 / P7 - color2
-    // P8 - colorspeed
-    // B81 - color steps
-    float cd = P8 * iTime;
-    cd = mix(cd, floor(cd * 10) * .1, B81);
-    vec3 c0 = mix(vec3(mix(0, 1, B62)), col(P6 + cd), vec3(B61));
-    vec3 c1 = mix(vec3(mix(0, 1, B72)), col(P7 + cd), vec3(B71));
-    // F5 - thickness
-    vec3 c = mix(c0, c1, step(.01 * F5, abs(uv.x * uv.y)));
+    //B11 / P1 - rotation
+    uv = mix(uv, uv * rot(iTime * P1), vec2(B11));
+    //B12 / F1 - movement
+    uv = mix(uv, uv + sin(iTime * F1 * 2), vec2(B12));
+    //B51 / F6 - wobble
+    float d = mix(1, mix(1, sin(iTime * F6 * 10), F5) ,B51);
+    // B21 / F2 - zoom1 + P2 - shape1
+    uv = mix(uv, cmod(uv * 20 * F2 * d, 10 * P2), vec2(B21));
+    // B22 - mirror
+    uv = mix(uv, abs(uv), vec2(B22));
+    // B23 - bending
+    uv = mix(uv, uv * vec2(cos(uv.x) - sin(uv.y), cos(uv.x) - sin(uv.y)), vec2(B23));
+    // B81 / P8 - fractal
+    uv = mix (uv, uv * length(uv * 20 * P8), vec2(B81));
+    // B31 / F3 - wave
+    uv = mix(uv, uv + iTime * F3, vec2(B31));
+    // B41 / F4 - zoom2 + P4 - shape2
+    uv = mix(uv, cmod(uv * F4, 2 * P4), vec2(B41));
+    // P5 - color1
+    // P6 - color2
+    // P7 - color speed
+    // F7 - color shift from center
+    float cd = iTime * P7 + length(uv1) * F7;
+    vec3 c = vec3(col(P5 + cd));
+    c = mix(c,  col(P6 + cd), smoothstep(E, -E, uv.x - uv.y));
     // F8 - echo
-    c = mix(c, texture(iChannel2, uv0).xyz, F8);
+    c = mix(c, texture(texture1, uv0).xyz, F8);
     fragColor = vec4(c,1.0);
 }
