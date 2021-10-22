@@ -73,8 +73,8 @@ void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
 
 #define VIDEO_W 1280
 #define VIDEO_H 720
-#define IMAGE_W 1280
-#define IMAGE_H 720
+#define IMAGE_W 1
+#define IMAGE_H 1
 
 // BASIC
 
@@ -82,18 +82,26 @@ vec2 cmod(vec2 uv, float m) {
     return mod(uv + m * .5, m) - m * .5;
 }
 
+float sin2(float x) {
+    return sin(x * 2 * PI);
+}
+
+float cos2(float x) {
+    return cos(x * 2 * PI);
+}
+
 mat2 rot(float angle) {
     return mat2(
-        cos(angle * 2. * PI), -sin(angle * 2. * PI),
-        sin(angle * 2. * PI), cos(angle * 2. * PI)
+        cos2(angle), -sin2(angle),
+        sin2(angle), cos2(angle)
     );
 }
 
 vec3 col(float x) {
     return vec3(
-        .5 * (sin(x * 2. * PI) + 1.),
-        .5 * (sin(x * 2. * PI + 2 * PI / 3) + 1.),
-        .5 * (sin(x * 2. * PI - 2 * PI / 3) + 1.)
+        .5 * (sin2(x) + 1.),
+        .5 * (sin2(x + .333) + 1.),
+        .5 * (sin2(x - .333) + 1.)
     );
 }
 
@@ -133,32 +141,40 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv1 = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     vec2 uv = uv1;
-    //B11 / P1 - rotation
-    uv = mix(uv, uv * rot(iTime * P1), vec2(B11));
-    //B12 / F1 - movement
-    uv = mix(uv, uv + sin(iTime * F1 * 2), vec2(B12));
-    //B51 / F6 - wobble
-    float d = mix(1, mix(1, sin(iTime * F6 * 10), F5) ,B51);
-    // B21 / F2 - zoom1 + P2 - shape1
-    uv = mix(uv, cmod(uv * 20 * F2 * d, 10 * P2), vec2(B21));
-    // B22 - mirror
-    uv = mix(uv, abs(uv), vec2(B22));
-    // B23 - bending
-    uv = mix(uv, uv * vec2(cos(uv.x) - sin(uv.y), cos(uv.x) - sin(uv.y)), vec2(B23));
-    // B81 / P8 - fractal
-    uv = mix (uv, uv * length(uv * 20 * P8), vec2(B81));
-    // B31 / F3 - wave
-    uv = mix(uv, uv + iTime * F3, vec2(B31));
-    // B41 / F4 - zoom2 + P4 - shape2
-    uv = mix(uv, cmod(uv * F4, 2 * P4), vec2(B41));
-    // P5 - color1
-    // P6 - color2
-    // P7 - color speed
-    // F7 - color shift from center
-    float cd = iTime * P7 + length(uv1) * F7;
-    vec3 c = vec3(col(P5 + cd));
-    c = mix(c,  col(P6 + cd), smoothstep(E, -E, uv.x - uv.y));
-    // F8 - echo
-    c = mix(c, texture(texture1, uv0).xyz, F8);
+    //B71 / P7 - rotation
+    uv = mix(uv, uv * rot(iTime * P7), vec2(B71));
+    //B72 / F7 - movement
+    uv = mix(uv, uv + sin(iTime * F7 * 2), vec2(B72));
+    // B61 / F6 - wobble range + P6 - wobble speed
+    float d = mix(1, mix(1, sin(iTime * P6 * 10), F6 * .1) ,B61);
+    // B51 / P5 - zoom1 + F5 - shape1
+    uv = mix(uv, pan(uv, P5 * 20 * d, 10 * F5), vec2(B51));
+    // B43 - mirror
+    uv = mix(uv, abs(uv), vec2(B43));
+    // B43 - bending
+    uv = mix(uv, uv * vec2(cos(uv.x) - sin(uv.y), cos(uv.x) - sin(uv.y)), vec2(B42));
+    // B42 / P4 - fractal
+    uv = mix (uv, uv * length(uv * 20 * P4), vec2(B42));
+    // B41 / F4 - wave
+    uv = mix(uv, uv + iTime * F4, vec2(B41));
+    // B31 / P3 - zoom2 + F3 - shape2
+    uv = mix(uv, pan(uv, P3, 2 * F3), vec2(B31));
+    // P1 - base color / F1 - Color spread
+    // B11 / B12 - Activate color (B/W) / B13 - invert BW
+    // B21 - P2 - Color Speed
+    // B22 / F2 - Color steps (2 - 10)
+    // B23 - Keep same colors
+    float cd = mix(0, mod(P2 * iTime * 2, 1), B21);
+    float steps = floor(F2 * 8 + 2);
+    cd = mix(cd, floor(cd * steps) / steps, B22);
+    vec3 c0 = mix(vec3(mix(0, 1, B13)), col(P1 + mix(cd, .25 + sin2(cd - .25) * F1 * .5, B23)), vec3(B11));
+    vec3 c1 = mix(vec3(mix(1, 0, B13)), col(P1 + mix(cd + F1 * .5, .25 + sin2(cd + .25) * F1 * .5, B23)), vec3(B12));
+    vec3 c = mix(c0,  c1, smoothstep(E, -E, uv.x - uv.y));
+    // B82 - logo / B83 - invert logo
+//    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
+    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 + .5).xyz);
+    // P8 / F8 - feedback
+    // B81 - invert feedback zoom
+    c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8, 1 + F8, B81) + .5).xyz, P8);
     fragColor = vec4(c,1.0);
 }

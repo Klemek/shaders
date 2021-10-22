@@ -149,15 +149,15 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     uv = mix(uv, pan(uv, P6 * 20, F6 * 10), vec2(B61));
     // P1 - base color / F1 - Color spread
     // B11 / B12 / B13 - Activate color (B/W/B)
-    // P2 - Color Speed
-    // B21 / F2 - Color steps (2 - 10)
-    // B22 - Keep same colors
-    float cd = mod(P2 * iTime, 1);
+    // B21 - P2 - Color Speed
+    // B22 / F2 - Color steps (2 - 10)
+    // B23 - Keep same colors
+    float cd = mix(0, mod(P2 * iTime * 2, 1), B21);
     float steps = floor(F2 * 8 + 2);
-    cd = mix(cd, floor(cd * steps) / steps, B21);
-    vec3 c0 = mix(vec3(0), col(P1 + mix(cd, .333 + sin2(cd) * F1 * .333, B22)), vec3(B11));
-    vec3 c1 = mix(vec3(.5), col(P1 + mix(cd + F1 * .333, .333 + sin2(cd + .333) * F1 * .333, B22)), vec3(B12));
-    vec3 c2 = mix(vec3(1), col(P1 + mix(cd + F1 * .667, .333 + sin2(cd + .667) * F1 * .333, B22)), vec3(B13));
+    cd = mix(cd, floor(cd * steps) / steps, B22);
+    vec3 c0 = mix(vec3(0), col(P1 + mix(cd, .333 + sin2(cd) * F1 * .333, B23)), vec3(B11));
+    vec3 c1 = mix(vec3(.5), col(P1 + mix(cd + F1 * .333, .333 + sin2(cd + .333) * F1 * .333, B23)), vec3(B12));
+    vec3 c2 = mix(vec3(1), col(P1 + mix(cd + F1 * .667, .333 + sin2(cd + .667) * F1 * .333, B23)), vec3(B13));
     vec3 c = c0;
     // P3 -> P4 -> P5 - circles
     // F3 - inner circle speed
@@ -168,7 +168,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     c = mix(c, c1, hcirc(uv, vec2(.0), P3 + .1 * sin(iTime * F3 * 10) - d, P4 + .1 * sin(iTime * F4 * 10) + d));
     // B82 - logo / B83 - invert logo
 //    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
-    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 * vec2(1, -1) + .5).xyz);
+    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
     c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8, 1 + F8, B81) + .5).xyz, P8);
