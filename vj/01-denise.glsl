@@ -73,8 +73,8 @@ void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
 
 #define VIDEO_W 1280
 #define VIDEO_H 720
-#define IMAGE_W 1280
-#define IMAGE_H 720
+#define IMAGE_W 1
+#define IMAGE_H 1
 
 // BASIC
 
@@ -166,6 +166,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float d = length(uv1) * F5;
     c = mix(c, c2, hcirc(uv, vec2(.0), P4 + .1 * sin(iTime * F4 * 10) + d, P5 + .1 * sin(iTime * F3 * 10) - d));
     c = mix(c, c1, hcirc(uv, vec2(.0), P3 + .1 * sin(iTime * F3 * 10) - d, P4 + .1 * sin(iTime * F4 * 10) + d));
+    // B82 - logo / B83 - invert logo
+//    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
+    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 * vec2(1, -1) + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
     c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8, 1 + F8, B81) + .5).xyz, P8);
