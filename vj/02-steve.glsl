@@ -175,6 +175,6 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
-    c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8, 1 + F8, B81) + .5).xyz, P8);
+    c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8 * spectrum1.x, 1 + F8 * spectrum1.x, B81) + .5).xyz, P8);
     fragColor = vec4(c,1.0);
 }
