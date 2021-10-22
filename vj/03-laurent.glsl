@@ -9,7 +9,12 @@ uniform vec2 iResolution;
 uniform float iTime;
 uniform vec3 spectrum1;
 uniform sampler2D midi1;
-uniform sampler2D texture1;
+uniform sampler2D frame1;
+uniform sampler2D video1;
+uniform sampler2D image1;
+uniform vec4 color1;
+uniform vec4 color2;
+
 
 float midi(float x, float y) {
     return texture(midi1, vec2(x/32., y/32.)).x;
@@ -66,8 +71,22 @@ void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
 #define PI 3.14159
 #define E .0001
 
+#define VIDEO_W 1280
+#define VIDEO_H 720
+#define IMAGE_W 1280
+#define IMAGE_H 720
+
+// BASIC
+
 vec2 cmod(vec2 uv, float m) {
     return mod(uv + m * .5, m) - m * .5;
+}
+
+mat2 rot(float angle) {
+    return mat2(
+        cos(angle * 2. * PI), -sin(angle * 2. * PI),
+        sin(angle * 2. * PI), cos(angle * 2. * PI)
+    );
 }
 
 vec3 col(float x) {
@@ -78,29 +97,36 @@ vec3 col(float x) {
     );
 }
 
+// SHAPES
 
-mat2 rot(float angle) {
-    return mat2(
-        cos(angle * 2. * PI), -sin(angle * 2. * PI),
-        sin(angle * 2. * PI), cos(angle * 2. * PI)
-    );
+float circ(vec2 uv, vec2 c, float size) {
+    return smoothstep(abs(size), length(uv - c), E);
 }
 
-vec2 lens(vec2 uv, float limit, float power) {
-    return uv * (F1 - length(uv * P1));
+float hcirc(vec2 uv, vec2 c, float size1, float size2) {
+    return clamp(circ(uv, c, max(size1, size2)) - circ(uv, c, min(size1, size2)), 0, 1);
 }
+
+// LAYERS
 
 vec2 move(vec2 uv, float speed, float range) {
     return uv + sin(iTime * speed) * range;
+}
+
+vec2 pan(vec2 uv, float zoom, float m) {
+    return cmod(uv * zoom, m + E);
+}
+
+vec2 lens(vec2 uv, float limit, float power) {
+    return uv * (limit - length(uv * power));
 }
 
 vec2 rotate(vec2 uv, float speed) {
     return uv * rot(iTime * speed);
 }
 
-vec2 pan(vec2 uv, float zoom, float m) {
-    return cmod(uv * zoom, m);
-}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
