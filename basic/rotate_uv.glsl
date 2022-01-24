@@ -33,7 +33,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     
-    uv *= rot(iTime * SPEED);
+    uv *= rot(iTime * SPEED * PI);
     
     uv = mod(uv * ZOOM, 1);
     
