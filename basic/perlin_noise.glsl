@@ -51,14 +51,16 @@ float perlin(vec2 uv0){
     return interpolate(interpolate(dg_00, dg_10, uv.x), interpolate(dg_01, dg_11, uv.x), uv.y);
 }
 
+#define ZOOM 5
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0) * vec2(iResolution.x / iResolution.y, 1);
 
-    float p = perlin(uv * 10) + perlin(uv * 50 + vec2(0, iTime)) + perlin(uv * 100);
+    float p = perlin(uv * ZOOM) + perlin(uv * ZOOM * 5 + vec2(0, iTime)) + perlin(uv * ZOOM * 10);
 
-    vec3 c = vec3(p);
+    vec3 c = vec3(p + 1) * .5;
     
     fragColor = vec4(c, 1);
 }
