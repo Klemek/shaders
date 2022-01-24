@@ -24,8 +24,8 @@ vec2 spiral(vec2 uv, float k1, float k2, float delta) {
     return (t - vec2(log(r) / k1, 0)) / (PI * vec2(2, k2));
 }
 
-#define K1 .05
-#define K2 .2
+#define K1 .1
+#define K2 .25
 #define SPEED .5
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
@@ -33,7 +33,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     
-    uv = spiral(uv, K1, K2, SPEED * iTime);
+    uv = spiral(uv, K1, K2, iTime * SPEED * PI);
     
     vec3 c = vec3(mod(uv, 1), 0);
     

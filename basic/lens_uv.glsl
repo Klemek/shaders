@@ -25,13 +25,14 @@ vec2 lens(vec2 uv, float limit, float power) {
 #define ZOOM 1
 #define LIMIT -1
 #define POWER -10
+#define SPEED .5
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     
-    uv = lens(uv, LIMIT + sin(iTime) * 5, POWER + cos(iTime) * 5);
+    uv = lens(uv, LIMIT + sin(iTime * SPEED * PI) * 5, POWER + cos(iTime * SPEED * PI) * 5);
     
     uv = mod(uv * ZOOM, 1);
     
