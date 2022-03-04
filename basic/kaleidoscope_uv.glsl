@@ -34,7 +34,7 @@ vec2 to_ortho(vec2 uv) {
 
 vec2 kal(vec2 uv, int n) {
     vec2 uvp = to_polar(uv);
-    uvp.y = mod(uvp.y + PI / (2 * n), PI / n) - PI / (2 * n);
+    uvp.y = abs(mod(uvp.y + PI / (2 * n), PI / n) - PI / (2 * n));
     return to_ortho(uvp);
 }
 
@@ -46,7 +46,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     
-    uv = kal(uv, 5);
+    uv = kal(uv, 3);
     
     uv = mod(uv * ZOOM - iTime * SPEED, 1);
     
