@@ -1,0 +1,12 @@
+base_uv,uv,2
+rotate_uv,uv,4
+spiral_uv,uv,4
+spiral2_uv,uv,4
+kaleidoscope_uv,uv,2
+lens_uv,uv,4
+perlin_noise,texture,4
+perlin_noise_color,texture,4
+random_color,texture,2
+random_grayscale_color,texture,1
+circle_shape,shape,2
+square_shape,shape,2

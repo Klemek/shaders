@@ -19,13 +19,14 @@ void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
 #define E .0001
 
 #define ZOOM 5
+#define SPEED 1
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     
-    uv = mod(uv * ZOOM, 1);
+    uv = mod(uv * ZOOM + iTime * SPEED, 1);
     
     vec3 c = vec3(uv, 0);
     
