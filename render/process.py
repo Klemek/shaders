@@ -1,4 +1,3 @@
-from io import TextIOWrapper
 import os
 import sys
 import os.path
@@ -99,7 +98,7 @@ def process_shader(path: str, output: str, time: int) -> bool:
                 "|",
                 "gifsicle",
                 "--optimize=3",
-                ">"
+                ">",
                 f'"{output}"',
             ]
         )
