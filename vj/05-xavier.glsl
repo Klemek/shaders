@@ -153,6 +153,10 @@ float rect(vec2 uv, vec2 c, vec2 size) {
     return smoothstep(size.x + E, size.x - E, abs(uv.x)) * smoothstep(size.y + E, size.y - E, abs(uv.y));
 }
 
+float circ(vec2 uv, vec2 c, float size) {
+    return smoothstep(abs(size), length(uv - c), E);
+}
+
 // DEBUG
 
 #define LT .002
@@ -216,10 +220,6 @@ vec2 spiral(vec2 uv, float k1, float k2, float delta) {
 
 vec2 lens(vec2 uv, float limit, float power) {
     return uv * (limit - length(uv * power));
-}
-
-float circ(vec2 uv, vec2 c, float size) {
-    return smoothstep(abs(size), length(uv - c), E);
 }
 
 vec2 pan(vec2 uv, float zoom, float m) {
