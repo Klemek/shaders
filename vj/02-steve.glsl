@@ -36,47 +36,47 @@ float midi(float x, float y) {
 
 float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
     float v = v0;
-    v = butt(B01, butt(B06, butt(v, v, v1), v1), v);
-    v = butt(B02, butt(B06, butt(v, v, v2), v2), v);
-    v = butt(B03, butt(B06, butt(v, v, v3), v3), v);
-    v = butt(B04, butt(B06, butt(v, v, v4), v4), v);
-    v = butt(B05, butt(B06, butt(v, v, v5), v5), v);
+    v = butt(B01, butt(B06, butt(v0, v0, v1), v1), v);
+    v = butt(B02, butt(B06, butt(v0, v0, v2), v2), v);
+//    v = butt(B03, butt(B06, butt(v0, v0, v3), v3), v);
+//    v = butt(B04, butt(B06, butt(v0, v0, v4), v4), v);
+//    v = butt(B05, butt(B06, butt(v0, v0, v5), v5), v);
     return v;
 }
 
-#define F1  preset(midi(29, 11), 0.18, 0.00, 0.00, 0.00, 0.00)
-#define P1  preset(midi(13, 12), 0.22, 0.00, 0.00, 0.00, 0.00)
-#define B11 preset(midi(29, 12), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define F1  preset(midi(29, 11), 0.18, 0.18, 0.00, 0.00, 0.00)
+#define P1  preset(midi(13, 12), 0.22, 0.95, 0.00, 0.00, 0.00)
+#define B11 preset(midi(29, 12), 1.00, 1.00, 0.00, 0.00, 0.00)
 #define B12 preset(midi(13, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
 #define B13 preset(midi(29, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
 
 #define F2  preset(midi(30, 11), 0.00, 0.00, 0.00, 0.00, 0.00)
-#define P2  preset(midi(14, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
-#define B21 preset(midi(30, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P2  preset(midi(14, 12), 0.00, 0.05, 0.00, 0.00, 0.00)
+#define B21 preset(midi(30, 12), 0.00, 1.00, 0.00, 0.00, 0.00)
 #define B22 preset(midi(14, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
-#define B23 preset(midi(30, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define B23 preset(midi(30, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
 
-#define F3  preset(midi(31, 11), 0.70, 0.00, 0.00, 0.00, 0.00)
-#define P3  preset(midi(15, 12), 0.25, 0.00, 0.00, 0.00, 0.00)
-#define B31 preset(midi(31, 12), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define F3  preset(midi(31, 11), 0.70, 0.70, 0.00, 0.00, 0.00)
+#define P3  preset(midi(15, 12), 0.25, 0.25, 0.00, 0.00, 0.00)
+#define B31 preset(midi(31, 12), 1.00, 1.00, 0.00, 0.00, 0.00)
 #define B32 preset(midi(15, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
 #define B33 preset(midi(31, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
 
-#define F4  preset(midi(00, 12), 1.00, 0.00, 0.00, 0.00, 0.00)
-#define P4  preset(midi(16, 12), 0.80, 0.00, 0.00, 0.00, 0.00)
-#define B41 preset(midi(00, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
-#define B42 preset(midi(16, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define F4  preset(midi(00, 12), 1.00, 1.00, 0.00, 0.00, 0.00)
+#define P4  preset(midi(16, 12), 0.80, 0.80, 0.00, 0.00, 0.00)
+#define B41 preset(midi(00, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
+#define B42 preset(midi(16, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
 #define B43 preset(midi(00, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
 
-#define F5  preset(midi(01, 12), 0.15, 0.00, 0.00, 0.00, 0.00)
-#define P5  preset(midi(17, 12), 0.10, 0.00, 0.00, 0.00, 0.00)
-#define B51 preset(midi(01, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
-#define B52 preset(midi(17, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
-#define B53 preset(midi(01, 14), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define F5  preset(midi(01, 12), 0.15, 0.15, 0.00, 0.00, 0.00)
+#define P5  preset(midi(17, 12), 0.10, 0.08, 0.00, 0.00, 0.00)
+#define B51 preset(midi(01, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
+#define B52 preset(midi(17, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
+#define B53 preset(midi(01, 14), 1.00, 1.00, 0.00, 0.00, 0.00)
 
-#define F6  preset(midi(02, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
-#define P6  preset(midi(18, 12), 0.05, 0.00, 0.00, 0.00, 0.00)
-#define B61 preset(midi(02, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
+#define F6  preset(midi(02, 12), 0.00, 1.00, 0.00, 0.00, 0.00)
+#define P6  preset(midi(18, 12), 0.05, 0.10, 0.00, 0.00, 0.00)
+#define B61 preset(midi(02, 13), 1.00, 1.00, 0.00, 0.00, 0.00)
 #define B62 preset(midi(18, 13), 1.00, 0.00, 0.00, 0.00, 0.00)
 #define B63 preset(midi(02, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
 

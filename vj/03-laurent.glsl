@@ -36,11 +36,11 @@ float midi(float x, float y) {
 
 float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
     float v = v0;
-    v = butt(B01, butt(B06, butt(v, v, v1), v1), v);
-    v = butt(B02, butt(B06, butt(v, v, v2), v2), v);
-    v = butt(B03, butt(B06, butt(v, v, v3), v3), v);
-    v = butt(B04, butt(B06, butt(v, v, v4), v4), v);
-    v = butt(B05, butt(B06, butt(v, v, v5), v5), v);
+    v = butt(B01, butt(B06, butt(v0, v0, v1), v1), v);
+    v = butt(B02, butt(B06, butt(v0, v0, v2), v2), v);
+    v = butt(B03, butt(B06, butt(v0, v0, v3), v3), v);
+    v = butt(B04, butt(B06, butt(v0, v0, v4), v4), v);
+    v = butt(B05, butt(B06, butt(v0, v0, v5), v5), v);
     return v;
 }
 
