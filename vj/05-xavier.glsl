@@ -28,16 +28,19 @@ float midi(float x, float y) {
 #define B03 midi(7, 13)
 #define B04 midi(6, 13)
 #define B05 midi(10, 13)
+#define B06 midi(25, 13)
+#define B07 midi(26, 13)
+#define B08 midi(27, 13)
 
-#define butt(vb, v1, v0) ((vb) > .01 ? (v1) : (v0))
+#define butt(vb, v1, v0) ((vb) > .001 ? (v1) : (v0))
 
 float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
     float v = v0;
-    v = butt(B01, v1, v);
-    v = butt(B02, v2, v);
-    v = butt(B03, v3, v);
-    v = butt(B04, v4, v);
-    v = butt(B05, v5, v);
+    v = butt(B01, butt(B06, butt(v, v, v1), v1), v);
+    v = butt(B02, butt(B06, butt(v, v, v2), v2), v);
+    v = butt(B03, butt(B06, butt(v, v, v3), v3), v);
+    v = butt(B04, butt(B06, butt(v, v, v4), v4), v);
+    v = butt(B05, butt(B06, butt(v, v, v5), v5), v);
     return v;
 }
 
