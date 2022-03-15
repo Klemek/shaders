@@ -15,6 +15,8 @@ uniform sampler2D image1;
 uniform vec4 color1;
 uniform vec4 color2;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 float midi(float x, float y) {
     return texture(midi1, vec2(x/32., y/32.)).x;
@@ -27,13 +29,15 @@ float midi(float x, float y) {
 #define B04 midi(6, 13)
 #define B05 midi(10, 13)
 
+#define butt(vb, v1, v0) ((vb) > .01 ? (v1) : (v0))
+
 float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
     float v = v0;
-    v = mix(v, v1, B01);
-    v = mix(v, v2, B02);
-    v = mix(v, v3, B03);
-    v = mix(v, v4, B04);
-    v = mix(v, v5, B05);
+    v = butt(B01, v1, v);
+    v = butt(B02, v2, v);
+    v = butt(B03, v3, v);
+    v = butt(B04, v4, v);
+    v = butt(B05, v5, v);
     return v;
 }
 
@@ -85,9 +89,11 @@ float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
 #define B82 preset(midi(20, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
 #define B83 preset(midi(04, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 void mainImage(out vec4, in vec2);
 void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,35 +141,16 @@ float circ(vec2 uv, vec2 c, float size) {
     return smoothstep(abs(size), length(uv - c), E);
 }
 
+float hcirc(vec2 uv, vec2 c, float size1, float size2) {
+    return clamp(circ(uv, c, max(size1, size2)) - circ(uv, c, min(size1, size2)), 0, 1);
+}
+
 float rect(vec2 uv, vec2 c, vec2 size) {
     uv -= c;
     return smoothstep(size.x + E, size.x - E, abs(uv.x)) * smoothstep(size.y + E, size.y - E, abs(uv.y));
 }
 
-float hcirc(vec2 uv, vec2 c, float size1, float size2) {
-    return clamp(circ(uv, c, max(size1, size2)) - circ(uv, c, min(size1, size2)), 0, 1);
-}
-
-// LAYERS
-
-vec2 move(vec2 uv, float speed, float range) {
-    return uv + sin(iTime * speed) * range;
-}
-
-vec2 pan(vec2 uv, float zoom, float m) {
-    return cmod(uv * zoom, m + E);
-}
-
-vec2 lens(vec2 uv, float limit, float power) {
-    return uv * (limit - length(uv * power));
-}
-
-vec2 rotate(vec2 uv, float speed) {
-    return uv * rot(iTime * speed);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+// DEBUG
 
 #define LT .002
 
@@ -203,6 +190,24 @@ float show_layout(vec2 uv) {
     return d;
 }
 
+// LAYERS
+
+vec2 move(vec2 uv, float speed, float range) {
+    return uv + sin(iTime * speed) * range;
+}
+
+vec2 pan(vec2 uv, float zoom, float m) {
+    return cmod(uv * zoom, m + E);
+}
+
+vec2 lens(vec2 uv, float limit, float power) {
+    return uv * (limit - length(uv * power));
+}
+
+vec2 rotate(vec2 uv, float speed) {
+    return uv * rot(iTime * speed);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -212,22 +217,22 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv1 = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     vec2 uv = uv1;
     // B73 - mirror
-    uv = mix(uv, abs(uv), vec2(B73));   
+    uv = butt(B73, abs(uv), uv);
     // B71 / P7 movement speed / F7 movement range
-    uv = mix(uv, move(uv, P7, F7), vec2(B71));
+    uv = butt(B71, move(uv, P7, F7), uv);
     // B61 / P6 - zoom / F6 - shape
-    uv = mix(uv, pan(uv, P6 * 20, F6 * 10), vec2(B61));
+    uv = butt(B61, pan(uv, P6 * 20, F6 * 10), uv);
     // P1 - base color / F1 - Color spread
     // B11 / B12 / B13 - Activate color (B/W/B)
     // B21 - P2 - Color Speed
     // B22 / F2 - Color steps (2 - 10)
     // B23 - Keep same colors
-    float cd = mix(0, mod(P2 * iTime * 2, 1), B21);
+    float cd = butt(B21, mod(P2 * iTime * 2, 1), 0);
     float steps = floor(F2 * 8 + 2);
-    cd = mix(cd, floor(cd * steps) / steps, B22);
-    vec3 c0 = mix(vec3(0), col(P1 + mix(cd, .333 + sin2(cd) * F1 * .333, B23)), vec3(B11));
-    vec3 c1 = mix(vec3(.5), col(P1 + mix(cd + F1 * .333, .333 + sin2(cd + .333) * F1 * .333, B23)), vec3(B12));
-    vec3 c2 = mix(vec3(1), col(P1 + mix(cd + F1 * .667, .333 + sin2(cd + .667) * F1 * .333, B23)), vec3(B13));
+    cd = butt(cd, floor(cd * steps) / steps, B22);
+    vec3 c0 = butt(B11, col(P1 + mix(cd, .333 + sin2(cd) * F1 * .333, B23)), vec3(0));
+    vec3 c1 = butt(B12, col(P1 + mix(cd + F1 * .333, .333 + sin2(cd + .333) * F1 * .333, B23)), vec3(1));
+    vec3 c2 = butt(B13, col(P1 + mix(cd + F1 * .667, .333 + sin2(cd + .667) * F1 * .333, B23)), vec3(.5));
     vec3 c = c0;
     // P3 -> P4 -> P5 - circles
     // F3 - inner circle speed
@@ -237,13 +242,13 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     c = mix(c, c2, hcirc(uv, vec2(.0), P4 + .1 * sin(iTime * F4 * 10) + d, P5 + .1 * sin(iTime * F3 * 10) - d));
     c = mix(c, c1, hcirc(uv, vec2(.0), P3 + .1 * sin(iTime * F3 * 10) - d, P4 + .1 * sin(iTime * F4 * 10) + d));
     // B82 - logo / B83 - invert logo
-//    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
-    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 + .5).xyz);
+//    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
+    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * texture(image1, uv1 + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
-    c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8 * spectrum1.x, 1 + F8 * spectrum1.x, B81) + .5).xyz, P8);
-    
-    c = mix(c, vec3(1), show_layout(uv1) * B00);
+    c = mix(c, texture(frame1, (uv0 - .5) * butt(B81, 1 + F8 * spectrum1.x, 1 - F8 * spectrum1.x) + .5).xyz, P8);
+    // B00 - debug midi
+    c = butt(B00, mix(c, mod(c + .5, 1), show_layout(uv1)), c);
     
     fragColor = vec4(c,1.0);
 }

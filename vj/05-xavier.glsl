@@ -15,55 +15,85 @@ uniform sampler2D image1;
 uniform vec4 color1;
 uniform vec4 color2;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 float midi(float x, float y) {
     return texture(midi1, vec2(x/32., y/32.)).x;
 }
 
-#define F1 midi(29, 11)
-#define F2 midi(30, 11)
-#define F3 midi(31, 11)
-#define F4 midi(0, 12)
-#define F5 midi(1, 12)
-#define F6 midi(2, 12)
-#define F7 midi(3, 12)
-#define F8 midi(4, 12)
-#define P1 midi(13, 12)
-#define P2 midi(14, 12)
-#define P3 midi(15, 12)
-#define P4 midi(16, 12)
-#define P5 midi(17, 12)
-#define P6 midi(18, 12)
-#define P7 midi(19, 12)
-#define P8 midi(20, 12) 
-#define B11 midi(29, 12)
-#define B21 midi(30, 12)
-#define B31 midi(31, 12)
-#define B41 midi(0, 13)
-#define B51 midi(1, 13)
-#define B61 midi(2, 13)
-#define B71 midi(3, 13)
-#define B81 midi(4, 13)
-#define B12 midi(13, 13)
-#define B22 midi(14, 13)
-#define B32 midi(15, 13)
-#define B42 midi(16, 13)
-#define B52 midi(17, 13)
-#define B62 midi(18, 13)
-#define B72 midi(19, 13)
-#define B82 midi(20, 13)
-#define B13 midi(29, 13)
-#define B23 midi(30, 13)
-#define B33 midi(31, 13)
-#define B43 midi(0, 14)
-#define B53 midi(1, 14)
-#define B63 midi(2, 14)
-#define B73 midi(3, 14)
-#define B83 midi(4, 14)
+#define B00 midi(11, 13)
+#define B01 midi(8, 13)
+#define B02 midi(9, 13)
+#define B03 midi(7, 13)
+#define B04 midi(6, 13)
+#define B05 midi(10, 13)
+
+#define butt(vb, v1, v0) ((vb) > .01 ? (v1) : (v0))
+
+float preset(float v0, float v1, float v2, float v3, float v4, float v5) {
+    float v = v0;
+    v = butt(B01, v1, v);
+    v = butt(B02, v2, v);
+    v = butt(B03, v3, v);
+    v = butt(B04, v4, v);
+    v = butt(B05, v5, v);
+    return v;
+}
+
+#define F1  preset(midi(29, 11), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P1  preset(midi(13, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B11 preset(midi(29, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B12 preset(midi(13, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B13 preset(midi(29, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F2  preset(midi(30, 11), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P2  preset(midi(14, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B21 preset(midi(30, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B22 preset(midi(14, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B23 preset(midi(30, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F3  preset(midi(31, 11), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P3  preset(midi(15, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B31 preset(midi(31, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B32 preset(midi(15, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B33 preset(midi(31, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F4  preset(midi(00, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P4  preset(midi(16, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B41 preset(midi(00, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B42 preset(midi(16, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B43 preset(midi(00, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F5  preset(midi(01, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P5  preset(midi(17, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B51 preset(midi(01, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B52 preset(midi(17, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B53 preset(midi(01, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F6  preset(midi(02, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P6  preset(midi(18, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B61 preset(midi(02, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B62 preset(midi(18, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B63 preset(midi(02, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F7  preset(midi(03, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P7  preset(midi(19, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B71 preset(midi(03, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B72 preset(midi(19, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B73 preset(midi(03, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+#define F8  preset(midi(04, 12), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define P8  preset(midi(20, 12), 0.00, 0.00, 0.00, 0.00, 0.00) 
+#define B81 preset(midi(04, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B82 preset(midi(20, 13), 0.00, 0.00, 0.00, 0.00, 0.00)
+#define B83 preset(midi(04, 14), 0.00, 0.00, 0.00, 0.00, 0.00)
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void mainImage(out vec4, in vec2);
 void main(void) { mainImage(fragColor,gl_FragCoord.xy); }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,8 +146,54 @@ vec3 col2(float x1, float x2, float x){
     return col(x1 + chainsaw(x) * (x2 - x1));
 }
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+// SHAPES
+
+float rect(vec2 uv, vec2 c, vec2 size) {
+    uv -= c;
+    return smoothstep(size.x + E, size.x - E, abs(uv.x)) * smoothstep(size.y + E, size.y - E, abs(uv.y));
+}
+
+// DEBUG
+
+#define LT .002
+
+float layout_fader(vec2 uv, float v) {
+    return clamp(rect(uv, vec2(0, .1 * (v - 1)), vec2(.02, .1 * v)) + rect(uv, vec2(0), vec2(.02, .1)) - rect(uv, vec2(0), vec2(.02 - LT, .1 - LT)), 0, 1);
+}
+
+float layout_button(vec2 uv, float v) {
+    return clamp(rect(uv, vec2(0), vec2(.02)) - rect(uv, vec2(0), vec2(.02 - LT) * (1 - v)), 0, 1);
+}
+
+float layout_pot(vec2 uv, float v) {
+    return clamp(rect(uv, vec2(.055 * (v - 1), 0), vec2(.055 * v, .02)) + rect(uv, vec2(0), vec2(.055, .02)) - rect(uv, vec2(0), vec2(.055 - LT, .02 - LT)), 0, 1);
+}
+
+float layout_block(vec2 uv, float f, float p, float b1, float b2, float b3) {
+    float d = 0;
+    d += clamp(layout_fader(uv - vec2(.0, .0), f), 0, 1);
+    d += clamp(layout_button(uv - vec2(-.07, .08), b1), 0, 1);
+    d += clamp(layout_button(uv - vec2(-.07, 0), b2), 0, 1);
+    d += clamp(layout_button(uv - vec2(-.07, -.08), b3), 0, 1);
+    d += clamp(layout_pot(uv - vec2(-.035, .15), p), 0, 1);
+    return d;
+}
+
+float show_layout(vec2 uv) {
+    float d = 0;
+    uv.y += .04;
+    uv.x += .49;d += layout_block(uv, F1, P1, B11, B12, B13);
+    uv.x -= .15;d += layout_block(uv, F2, P2, B21, B22, B23);
+    uv.x -= .15;d += layout_block(uv, F3, P3, B31, B32, B33);
+    uv.x -= .15;d += layout_block(uv, F4, P4, B41, B42, B43);
+    uv.x -= .15;d += layout_block(uv, F5, P5, B51, B52, B53);
+    uv.x -= .15;d += layout_block(uv, F6, P6, B61, B62, B63);
+    uv.x -= .15;d += layout_block(uv, F7, P7, B71, B72, B73);
+    uv.x -= .15;d += layout_block(uv, F8, P8, B81, B82, B83);
+    return d;
+}
+
+// LAYERS
 
 #define TRAIL_HEIGHT .01
 
@@ -150,40 +226,40 @@ vec2 pan(vec2 uv, float zoom, float m) {
     return cmod2(uv * zoom, m + E);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 void mainImage(out vec4 fragColor, in vec2 fragCoord)
 {
     vec2 uv0 = (fragCoord.xy) / iResolution.xy;
     vec2 uv1 = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
-    
     vec2 uv = uv1;
-    
     // B61 / P6 - zoom / F6 - shape
-    uv = mix(uv, pan(uv, P6 * 2, F6), vec2(B61));
+    uv = butt(B61, pan(uv, P6 * 2, F6), uv);
     // B42 - mirror
     // B41 / P4 - bend power / F4 - bend balance
     // B51 / F5 - shift power / P5 - shift speed
-    uv = mix(uv, abs(uv), vec2(B42));
-    uv = mix(uv, uv * 
+    uv = butt(B42, abs(uv), uv);
+    uv = butt(B41, uv * 
         cos(uv.x * (P4 + (F4 - .5) + mix(0, sin(mod(iTime * P5, 1)), B51) * F5) * 10) +
-        sin(uv.y * (P4 - (F4 - .5) + mix(0, sin(mod(iTime * P5, 1)), B51) * F5) * 10), vec2(B41));
-    
+        sin(uv.y * (P4 - (F4 - .5) + mix(0, sin(mod(iTime * P5, 1)), B51) * F5) * 10), uv);
     vec2 uv2 = spiral(uv, .2, .1, iTime);
-    
     // F2 - Trail size
     uv2.x += 100 * rand(int(uv2.y/((F2 * .05 + .005))));
     float t = trails(uv2);
-    
     // B31 / F3 - circle size / P3 circle width
     float c_size = .1 * F3;
-    t = mix(t, (clamp(t + circ(uv, vec2(0), c_size), 0, 1) - circ(uv, vec2(0), c_size - P3 * .05)), B31);
+    t = butt(B31, (clamp(t + circ(uv, vec2(0), c_size), 0, 1) - circ(uv, vec2(0), c_size - P3 * .05)), t);
     // P1 - base color / F1 - Color spread
     // B21 - P2 - Color Speed
     vec3 c = t * col2(P1, P1 + F1, uv2.x);
     // B82 - logo / B83 - invert logo
-//    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * (1 - texture(video1, uv1 * .5 + .5).xyz));
-    c = mix(c, mix(vec3(1), 1 - c, vec3(B83)), vec3(B82) * texture(image1, uv1 + .5).xyz);
+//    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
+    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * texture(image1, uv1 + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
-    c = mix(c, texture(frame1, (uv0 - .5) * mix(1 - F8 * spectrum1.x, 1 + F8 * spectrum1.x, B81) + .5).xyz, P8);
+    c = mix(c, texture(frame1, (uv0 - .5) * butt(B81, 1 + F8 * spectrum1.x, 1 - F8 * spectrum1.x) + .5).xyz, P8);
+    // B00 - debug midi
+    c = butt(B00, mix(c, mod(c + .5, 1), show_layout(uv1)), c);
     fragColor = vec4(c,1.0);
 }
