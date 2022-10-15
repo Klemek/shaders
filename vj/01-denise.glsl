@@ -32,72 +32,64 @@ float midi(float x, float y) {
 #define B07 midi(26, 13)
 #define B08 midi(27, 13)
 
-float butt(float vb, float v1, float v0) {
-    return mix(v0, v1, vb);
-}
+#define butt(vb, v1, v0) ((vb) > .001 ? (v1) : (v0))
 
-vec2 butt2(float vb, vec2 v1, vec2 v0) {
-    return mix(v0, v1, vec2(vb));
-}
-
-vec3 butt3(float vb, vec3 v1, vec3 v0) {
-    return mix(v0, v1, vec3(vb));
-}
-
-float preset(float v0, float v1, float v2) {
+float preset(float v0, float v1, float v2, float v3, float v4) {
     float v = v0;
-    v = butt(B01, butt(B05, mix(v1, v0, clamp(v0 * 1000, 0, 1)), v1), v);
-    v = butt(B02, butt(B05, mix(v2, v0, clamp(v0 * 1000, 0, 1)), v2), v);
+    v = butt(B01, butt(B05, butt(v0, v0, v1), v1), v);
+    v = butt(B02, butt(B05, butt(v0, v0, v2), v2), v);
+    v = butt(B03, butt(B05, butt(v0, v0, v3), v3), v);
+    v = butt(B04, butt(B05, butt(v0, v0, v4), v4), v);
     return v;
 }
 
-#define F1  preset(midi(29, 11), 0.50, 0.25)
-#define P1  preset(midi(13, 12), 0.25, 0.00)
-#define B11 preset(midi(29, 12), 1.00, 0.00)
-#define B12 preset(midi(13, 13), 1.00, 1.00)
-#define B13 preset(midi(29, 13), 1.00, 0.00)
+#define F1  preset(midi(29, 11), 0.50, 0.25, 0.00, 0.00)
+#define P1  preset(midi(13, 12), 0.25, 0.00, 0.00, 0.00)
+#define B11 preset(midi(29, 12), 1.00, 0.00, 0.00, 0.00)
+#define B12 preset(midi(13, 13), 1.00, 1.00, 0.00, 0.00)
+#define B13 preset(midi(29, 13), 1.00, 0.00, 0.00, 0.00)
 
-#define F2  preset(midi(30, 11), 0.00, 0.30)
-#define P2  preset(midi(14, 12), 0.00, 0.05)
-#define B21 preset(midi(30, 12), 0.00, 1.00)
-#define B22 preset(midi(14, 13), 0.00, 0.00)
-#define B23 preset(midi(30, 13), 0.00, 1.00)
+#define F2  preset(midi(30, 11), 0.00, 0.30, 0.00, 0.00)
+#define P2  preset(midi(14, 12), 0.00, 0.05, 0.00, 0.00)
+#define B21 preset(midi(30, 12), 0.00, 1.00, 0.00, 0.00)
+#define B22 preset(midi(14, 13), 0.00, 0.00, 0.00, 0.00)
+#define B23 preset(midi(30, 13), 0.00, 1.00, 0.00, 0.00)
 
-#define F3  preset(midi(31, 11), 0.25, 0.00)
-#define P3  preset(midi(15, 12), 0.05, 0.00)
-#define B31 preset(midi(31, 12), 0.00, 0.00)
-#define B32 preset(midi(15, 13), 0.00, 0.00)
-#define B33 preset(midi(31, 13), 0.00, 0.00)
+#define F3  preset(midi(31, 11), 0.25, 0.00, 0.00, 0.00)
+#define P3  preset(midi(15, 12), 0.05, 0.00, 0.00, 0.00)
+#define B31 preset(midi(31, 12), 0.00, 0.00, 0.00, 0.00)
+#define B32 preset(midi(15, 13), 0.00, 0.00, 0.00, 0.00)
+#define B33 preset(midi(31, 13), 0.00, 0.00, 0.00, 0.00)
 
-#define F4  preset(midi(00, 12), 0.33, 0.33)
-#define P4  preset(midi(16, 12), 0.25, 0.15)
-#define B41 preset(midi(00, 13), 0.00, 0.00)
-#define B42 preset(midi(16, 13), 0.00, 0.00)
-#define B43 preset(midi(00, 14), 0.00, 0.00)
+#define F4  preset(midi(00, 12), 0.33, 0.33, 0.00, 0.00)
+#define P4  preset(midi(16, 12), 0.25, 0.15, 0.00, 0.00)
+#define B41 preset(midi(00, 13), 0.00, 0.00, 0.00, 0.00)
+#define B42 preset(midi(16, 13), 0.00, 0.00, 0.00, 0.00)
+#define B43 preset(midi(00, 14), 0.00, 0.00, 0.00, 0.00)
 
-#define F5  preset(midi(01, 12), 0.33, 1.00)
-#define P5  preset(midi(17, 12), 0.33, 0.00)
-#define B51 preset(midi(01, 13), 0.00, 0.00)
-#define B52 preset(midi(17, 13), 0.00, 0.00)
-#define B53 preset(midi(01, 14), 0.00, 0.00)
+#define F5  preset(midi(01, 12), 0.33, 1.00, 0.00, 0.00)
+#define P5  preset(midi(17, 12), 0.33, 0.00, 0.00, 0.00)
+#define B51 preset(midi(01, 13), 0.00, 0.00, 0.00, 0.00)
+#define B52 preset(midi(17, 13), 0.00, 0.00, 0.00, 0.00)
+#define B53 preset(midi(01, 14), 0.00, 0.00, 0.00, 0.00)
 
-#define F6  preset(midi(02, 12), 0.05, 0.10)
-#define P6  preset(midi(18, 12), 0.05, 0.20)
-#define B61 preset(midi(02, 13), 1.00, 1.00)
-#define B62 preset(midi(18, 13), 0.00, 0.00)
-#define B63 preset(midi(02, 14), 0.00, 0.00)
+#define F6  preset(midi(02, 12), 0.05, 0.10, 0.00, 0.00)
+#define P6  preset(midi(18, 12), 0.05, 0.20, 0.00, 0.00)
+#define B61 preset(midi(02, 13), 1.00, 1.00, 0.00, 0.00)
+#define B62 preset(midi(18, 13), 0.00, 0.00, 0.00, 0.00)
+#define B63 preset(midi(02, 14), 0.00, 0.00, 0.00, 0.00)
 
-#define F7  preset(midi(03, 12), 0.00, 0.75)
-#define P7  preset(midi(19, 12), 0.00, 0.40)
-#define B71 preset(midi(03, 13), 0.00, 1.00)
-#define B72 preset(midi(19, 13), 0.00, 0.00)
-#define B73 preset(midi(03, 14), 0.00, 1.00)
+#define F7  preset(midi(03, 12), 0.00, 0.75, 0.00, 0.00)
+#define P7  preset(midi(19, 12), 0.00, 0.40, 0.00, 0.00)
+#define B71 preset(midi(03, 13), 0.00, 1.00, 0.00, 0.00)
+#define B72 preset(midi(19, 13), 0.00, 0.00, 0.00, 0.00)
+#define B73 preset(midi(03, 14), 0.00, 1.00, 0.00, 0.00)
 
-#define F8  preset(midi(04, 12), 0.00, 0.00)
-#define P8  preset(midi(20, 12), 0.00, 0.00) 
-#define B81 preset(midi(04, 13), 0.00, 0.00)
-#define B82 preset(midi(20, 13), 0.00, 0.00)
-#define B83 preset(midi(04, 14), 0.00, 0.00)
+#define F8  preset(midi(04, 12), 0.00, 0.00, 0.00, 0.00)
+#define P8  preset(midi(20, 12), 0.00, 0.00, 0.00, 0.00) 
+#define B81 preset(midi(04, 13), 0.00, 0.00, 0.00, 0.00)
+#define B82 preset(midi(20, 13), 0.00, 0.00, 0.00, 0.00)
+#define B83 preset(midi(04, 14), 0.00, 0.00, 0.00, 0.00)
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,11 +240,11 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     vec2 uv1 = (uv0 - .5) * vec2(iResolution.x / iResolution.y, 1);
     vec2 uv = uv1;
     // B73 - mirror
-    uv = butt2(B73, abs(uv), uv);
+    uv = butt(B73, abs(uv), uv);
     // B71 / P7 movement speed / F7 movement range
-    uv = butt2(B71, move(uv, P7, F7), uv);
+    uv = butt(B71, move(uv, P7, F7), uv);
     // B61 / P6 - zoom / F6 - shape
-    uv = butt2(B61, pan(uv, P6 * 20, F6 * 10), uv);
+    uv = butt(B61, pan(uv, P6 * 20, F6 * 10), uv);
     // P1 - base color / F1 - Color spread
     // B11 / B12 / B13 - Activate color (B/W/B)
     // B21 - P2 - Color Speed
@@ -261,9 +253,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float cd = butt(B21, mod(P2 * iTime * 2, 1), 0);
     float steps = floor(F2 * 8 + 2);
     cd = butt(cd, floor(cd * steps) / steps, B22);
-    vec3 c0 = butt3(B11, col(P1 + butt(B23, .333 + sin2(cd) * F1 * .333, cd)), vec3(0));
-    vec3 c1 = butt3(B12, col(P1 + butt(B23, .333 + sin2(cd + .333) * F1 * .333, cd + F1 * .333)), vec3(1));
-    vec3 c2 = butt3(B13, col(P1 + butt(B23, .333 + sin2(cd + .667) * F1 * .333, cd + F1 * .667)), vec3(.5));
+    vec3 c0 = butt(B11, col(P1 + mix(cd, .333 + sin2(cd) * F1 * .333, B23)), vec3(0));
+    vec3 c1 = butt(B12, col(P1 + mix(cd + F1 * .333, .333 + sin2(cd + .333) * F1 * .333, B23)), vec3(1));
+    vec3 c2 = butt(B13, col(P1 + mix(cd + F1 * .667, .333 + sin2(cd + .667) * F1 * .333, B23)), vec3(.5));
     vec3 c = c0;
     // P3 -> P4 -> P5 - circles
     // F3 - inner circle speed
@@ -274,12 +266,12 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     c = mix(c, c1, hcirc(uv, vec2(.0), P3 + .1 * sin(iTime * F3 * 10) - d, P4 + .1 * sin(iTime * F4 * 10) + d));
     // B82 - logo / B83 - invert logo
 //    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * (1 - texture(video1, uv1 + .5).xyz));
-    c = mix(c, butt3(B83, 1 - c, vec3(1)), vec3(B82) * texture(image1, uv1 + .5).xyz);
+    c = mix(c, butt(B83, 1 - c, vec3(1)), vec3(B82) * texture(image1, uv1 + .5).xyz);
     // P8 / F8 - feedback
     // B81 - invert feedback zoom
     c = mix(c, texture(frame1, (uv0 - .5) * butt(B81, 1 + F8 * spectrum1.x, 1 - F8 * spectrum1.x) + .5).xyz, P8);
     // B00 - debug midi
-    c = butt3(B00, mix(c, mod(c + .5, 1), show_layout(uv1)), c);
+    //c = butt(B00, mix(c, mod(c + .5, 1), show_layout(uv1)), c);
     
     fragColor = vec4(c,1.0);
 }
